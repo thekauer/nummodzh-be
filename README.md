@@ -5,6 +5,7 @@
 ```
 npm i
 docker-compose up -d
+npx prisma generate
 npm run start:dev
 ```
 
