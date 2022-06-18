@@ -9,11 +9,11 @@ export class EventController {
 
   @Sse('/candidate')
   candidate() {
-    // return this.eventService.subscribeCandidate();
+    return this.eventService.subscribeCandidate();
   }
 
   @Sse('/facilitator')
   facilitator() {
-    // return this.eventService.subscribeFacilitator();
+    return this.eventService.subscribeFacilitator();
   }
 }

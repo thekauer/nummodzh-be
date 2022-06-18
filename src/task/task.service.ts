@@ -3,21 +3,30 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AnswerDto } from './answer.dto';
 import { TaskDto } from './task.dto';
 import { Task } from '@prisma/client';
+import { EventService } from '../event/event.service';
 
 @Injectable()
 export class TaskService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly eventService: EventService,
+  ) {}
 
   public async saveTask(task: TaskDto): Promise<Task> {
-    return await this.prisma.task.create({ data: task });
+    const entity = await this.prisma.task.create({ data: task });
+    this.eventService.emitFacilitator(entity);
+    return entity;
   }
 
   public async saveAnswer({ number }: AnswerDto): Promise<Task> {
     const { answer, certainty, id } = await this.getTask(number);
-    return await this.prisma.task.update({
+    const entity = await this.prisma.task.update({
       data: { answer, certainty },
       where: { id },
     });
+
+    this.eventService.emitCandidate(entity);
+    return entity;
   }
 
   public async getTasks() {
