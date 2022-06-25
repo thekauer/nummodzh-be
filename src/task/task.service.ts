@@ -18,11 +18,15 @@ export class TaskService {
     return entity;
   }
 
-  public async saveAnswer({ number }: AnswerDto): Promise<Task> {
-    const { answer, certainty, id } = await this.getTask(number);
+  public async saveAnswer({
+    number,
+    answer,
+    certainty,
+  }: AnswerDto): Promise<Task> {
+    const { id } = await this.getTask(number);
     const entity = await this.prisma.task.update({
-      data: { answer, certainty },
       where: { id },
+      data: { answer, certainty },
     });
 
     this.eventService.emitCandidate(entity);
